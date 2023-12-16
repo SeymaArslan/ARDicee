@@ -57,6 +57,22 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Pause the view's session
         sceneView.session.pause()
     }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let touch = touches.first {
+            let touchLocation = touch.location(in: sceneView)
+            if let query = sceneView.raycastQuery(from: touchLocation, allowing: .estimatedPlane,
+            alignment: .horizontal) {
+                  let results = sceneView.session.raycast(query)
+                  if !results.isEmpty {
+                    print("Touched the plane: \(results)")
+                  } else {
+                    print("Touched somewhere else")
+                  }
+                }
+
+        }
+    }
 
     // MARK: - ARSCNViewDelegate
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
