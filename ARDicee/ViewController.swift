@@ -62,15 +62,25 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         if let touch = touches.first {
             let touchLocation = touch.location(in: sceneView)
             if let query = sceneView.raycastQuery(from: touchLocation, allowing: .estimatedPlane,
-            alignment: .horizontal) {
-                  let results = sceneView.session.raycast(query)
-                  if !results.isEmpty {
-                    print("Touched the plane: \(results)")
-                  } else {
-                    print("Touched somewhere else")
-                  }
+                                                  alignment: .horizontal) {
+                let results = sceneView.session.raycast(query)
+                //                  if !results.isEmpty {
+                //                    print("Touched the plane: \(results)")
+                //                  } else {
+                //                    print("Touched somewhere else")
+                //                  }
+                if let raycastResult = results.first {
+                    let diceScene = SCNScene(named: "art.scnassets/diceColladacopy.scn")!
+                    if let diceNode = diceScene.rootNode.childNode(withName: "Dice", recursively: true) {
+                        diceNode.position = SCNVector3(
+                            x: raycastResult.worldTransform.columns.3.x,
+                            y: raycastResult.worldTransform.columns.3.y + diceNode.boundingSphere.radius,
+                            z: raycastResult.worldTransform.columns.3.z)
+                        sceneView.scene.rootNode.addChildNode(diceNode)
+                    }
                 }
-
+            }
+            
         }
     }
 
